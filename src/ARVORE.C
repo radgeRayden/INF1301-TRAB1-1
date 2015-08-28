@@ -37,9 +37,9 @@
 *
 ***********************************************************************/
 
-   typedef struct tgNoArvore {
+   typedef struct tgNoMatriz {
 
-         struct tgNoArvore * pNoPai ;
+         struct tgNoMatriz * pNoN ;
                /* Ponteiro para pai
                *
                *$EED Assertivas estruturais
@@ -47,17 +47,26 @@
                *   Se não for raiz, um de pNoEsq ou pNoDir de pNoPai do nó
                *   corrente apontam para o nó corrente */
 
-         struct tgNoArvore * pNoEsq ;
+         struct tgNoMatriz * pNoW ;
                /* Ponteiro para filho à esquerda
                *
                *$EED Assertivas estruturais
                *   se pNoEsq do nó X != NULL então pNoPai de pNoEsq aponta para o nó X */
 
-         struct tgNoArvore * pNoDir ;
+         struct tgNoMatriz * pNoE ;
                /* Ponteiro para filho à direita
                *
                *$EED Assertivas estruturais
                *   se pNoDir do nó X != NULL então pNoPai de pNoDir aponta para o nó X */
+		 struct tgNoMatriz * pNoS;
+
+		 struct tgNoMatriz * pNoNW;
+
+		 struct tgNoMatriz * pNoNE;
+
+		 struct tgNoMatriz * pNoSW;
+
+		 struct tgNoMatriz * pNoSE;
 
          char Valor ;
                /* Valor do nó */
