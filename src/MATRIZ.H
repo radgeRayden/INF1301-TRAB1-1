@@ -1,10 +1,10 @@
-#if ! defined( ARVORE_ )
-#define ARVORE_
+#if ! defined( MATRIZ_ )
+#define MATRIZ_
 /***************************************************************************
 *
 *  $MCD Módulo de definição: Módulo árvore
 *
-*  Arquivo gerado:              ARVORE.H
+*  Arquivo gerado:              MATRIZ.H
 *  Letras identificadoras:      ARV
 *
 *  Nome da base de software:    Exemplo de teste automatizado
@@ -34,10 +34,10 @@
 *
 ***************************************************************************/
  
-#if defined( ARVORE_OWN )
-   #define ARVORE_EXT
+#if defined( MATRIZ_OWN )
+   #define MATRIZ_EXT
 #else
-   #define ARVORE_EXT extern
+   #define MATRIZ_EXT extern
 #endif
 
 
@@ -50,51 +50,51 @@
 
    typedef enum {
 
-         ARV_CondRetOK = 0 ,
+         MAT_CondRetOK = 0 ,
                /* Executou correto */
 
-         ARV_CondRetNaoCriouRaiz = 1 ,
+         MAT_CondRetNaoCriouRaiz = 1 ,
                /* Não criou nó raiz */
 
-         ARV_CondRetErroEstrutura = 2 ,
+         MAT_CondRetErroEstrutura = 2 ,
                /* Estrutura da árvore está errada */
 
-         ARV_CondRetNaoEhFolha = 3 ,
+         MAT_CondRetNaoEhFolha = 3 ,
                /* Não é folha relativa à direção de inserção desejada */
 
-         ARV_CondRetArvoreNaoExiste = 4 ,
+         MAT_CondRetMATRIZNaoExiste = 4 ,
                /* Árvore não existe */
 
-         ARV_CondRetArvoreVazia = 5 ,
+         MAT_CondRetMATRIZVazia = 5 ,
                /* Árvore está vazia */
 
-         ARV_CondRetNohEhRaiz = 6 ,
+         MAT_CondRetNohEhRaiz = 6 ,
                /* Nó corrente é raiz */
 
-         ARV_CondRetNaoPossuiFilho = 7 ,
+         MAT_CondRetNaoPossuiFilho = 7 ,
                /* Nó corrente não possui filho na direção desejada */
 
-         ARV_CondRetFaltouMemoria = 8
+         MAT_CondRetFaltouMemoria = 8
                /* Faltou memória ao alocar dados */
 
-   } ARV_tpCondRet ;
+   } MAT_tpCondRet ;
 
 
 /***********************************************************************
 *
-*  $FC Função: ARV Criar árvore
+*  $FC Função: MAT Criar árvore
 *
 *  $ED Descrição da função
 *     Cria uma nova árvore vazia.
 *     Caso já exista uma árvore, esta será destruída.
 *
 *  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetFaltouMemoria
+*     MAT_CondRetOK
+*     MAT_CondRetFaltouMemoria
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_CriarArvore( void ) ;
+   MAT_tpCondRet MAT_CriarMatriz( void ) ;
 
 
 /***********************************************************************
@@ -107,7 +107,7 @@
 *
 ***********************************************************************/
 
-   void ARV_DestruirArvore( void ) ;
+   void MAT_DestruirMatriz(void* matriz) ;
 
 
 /***********************************************************************
@@ -125,7 +125,7 @@
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_InserirEsquerda( char ValorParm ) ;
+   //ARV_tpCondRet ARV_InserirEsquerda( char ValorParm ) ;
 
 
 /***********************************************************************
@@ -143,7 +143,7 @@
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_InserirDireita( char ValorParm ) ;
+   //ARV_tpCondRet ARV_InserirDireita( char ValorParm ) ;
 
 
 /***********************************************************************
@@ -152,13 +152,13 @@
 *
 *  $FV Valor retornado
 *     ARV_CondRetOK
-*     ARV_CondRetArvoreNaoExiste
-*     ARV_CondRetArvoreVazia
+*     ARV_CondRetMATRIZNaoExiste
+*     ARV_CondRetMATRIZVazia
 *     ARV_CondRetNoEhRaiz
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_IrPai( void ) ;
+   //ARV_tpCondRet ARV_IrPai( void ) ;
 
 
 /***********************************************************************
@@ -167,13 +167,13 @@
 *
 *  $FV Valor retornado
 *     ARV_CondRetOK
-*     ARV_CondRetArvoreNaoExiste
-*     ARV_CondRetArvoreVazia
+*     ARV_CondRetMATRIZNaoExiste
+*     ARV_CondRetMATRIZVazia
 *     ARV_CondRetNaoPossuiFilho   - nó corrente não possui filho à esquerda
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_IrNoEsquerda( void ) ;
+   //ARV_tpCondRet ARV_IrNoEsquerda( void ) ;
 
 
 /***********************************************************************
@@ -182,13 +182,13 @@
 *
 *  $FV Valor retornado
 *     ARV_CondRetOK
-*     ARV_CondRetArvoreNaoExiste
-*     ARV_CondRetArvoreVazia
+*     ARV_CondRetMATRIZNaoExiste
+*     ARV_CondRetMATRIZVazia
 *     ARV_CondRetNaoPossuiFilho   - nó corrente não possui filho à direita
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_IrNoDireita( void ) ;
+   //ARV_tpCondRet ARV_IrNoDireita( void ) ;
 
 
 /***********************************************************************
@@ -201,14 +201,14 @@
 *
 *  $FV Valor retornado
 *     ARV_CondRetOK
-*     ARV_CondRetArvoreNaoExiste
-*     ARV_CondRetArvoreVazia
+*     ARV_CondRetMATRIZNaoExiste
+*     ARV_CondRetMATRIZVazia
 *
 ***********************************************************************/
 
-   ARV_tpCondRet ARV_ObterValorCorr( char * ValorParm ) ;
+   //ARV_tpCondRet ARV_ObterValorCorr( char * ValorParm ) ;
 
-#undef ARVORE_EXT
+#undef MATRIZ_EXT
 
 /********** Fim do módulo de definição: Módulo árvore **********/
 
