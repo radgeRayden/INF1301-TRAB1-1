@@ -14,7 +14,7 @@
 *           Gustavo Aranha     - GA
 *
 *  $HA Histórico de evolução:
-*       1.00   WS   03/09/2015 Versão inicial dom módulo
+*       1.00   WS   03/09/2015 Versão inicial do módulo
 *
 ***************************************************************************/
 
