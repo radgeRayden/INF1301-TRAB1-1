@@ -160,7 +160,7 @@
             CondRetObtido = MAT_IrN ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Norte." );
 
          } /* fim ativa: Testar MAT Ir Norte */
 
@@ -178,7 +178,7 @@
             CondRetObtido = MAT_IrNE ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Nordeste." );
 
          } /* fim ativa: Testar MAT Ir Nordeste */
 
@@ -196,7 +196,7 @@
             CondRetObtido = MAT_IrE ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Leste." );
 
          } /* fim ativa: Testar MAT Ir Leste */
  
@@ -214,7 +214,7 @@
             CondRetObtido = MAT_IrSE ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Sudeste." );
 
          } /* fim ativa: Testar MAT Ir Sudeste */
 
@@ -232,7 +232,7 @@
             CondRetObtido = MAT_IrS ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Sul." );
 
          } /* fim ativa: Testar MAT Ir Sul */
 
@@ -250,7 +250,7 @@
             CondRetObtido = MAT_IrSW ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Sudoeste." );
 
          } /* fim ativa: Testar MAT Ir Sudoeste */
 
@@ -268,7 +268,7 @@
             CondRetObtido = MAT_IrW ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Oeste." );
 
          } /* fim ativa: Testar MAT Ir Oeste */
 
@@ -286,7 +286,7 @@
             CondRetObtido = MAT_IrNW ( pMatriz[indexTemp] ) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
-                                    "Retorno errado ao inserir à esquerda." );
+                                    "Retorno errado ao mover ao Noroeste." );
 
          } /* fim ativa: Testar MAT Ir NOROESTE */
 
