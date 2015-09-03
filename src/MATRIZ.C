@@ -144,7 +144,7 @@
 *
 ***********************************************************************/
 
-int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
+MAT_tpCondRet MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
   tpNoMatriz* novoNo;
   tpNoMatriz** temp = NULL;
   int i;
@@ -536,7 +536,7 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 *     MAT_CondRetMatrizVazia
 *
 ***********************************************************************/
-	int MAT_ObterValorCorr( tpMatriz *matriz, char * saida )
+	MAT_tpCondRet MAT_ObterValorCorr( tpMatriz *matriz, char * saida )
 	{
 		if(matriz==NULL) {
 			return MAT_CondRetMatrizNaoExiste;
