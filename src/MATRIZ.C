@@ -231,11 +231,11 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
   *temp = novoNo;
   
   	/* Seguindo a representação da matriz na seguinte forma (ex. matriz 3x3):
-	 	| x - 1, y - 1		x, y - 1	 x + 1, y - 1 |
+	 	| x - 1, y - 1          x, y - 1         x + 1, y - 1 |
 	 
-	 	| x - 1, y			x, y		 x + 1, y	  |
+	 	| x - 1, y              x, y             x + 1, y     |
 
-	 	| x - 1, y + 1		x, y + 1	 x + 1, y + 1 |
+	 	| x - 1, y + 1          x, y + 1         x + 1, y + 1 |
 
 	*/
 
