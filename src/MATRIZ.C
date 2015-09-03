@@ -1,22 +1,20 @@
 /***************************************************************************
-*  $MCI MÛdulo de implementaÁ„o: MÛdulo ·rvore
+*  $MCI M√≥dulo de implementa√ß√£o: M√≥dulo matriz
 *
-*  Arquivo gerado:              ARVORE.C
-*  Letras identificadoras:      ARV
+*  Arquivo gerado:              MATRIZ.C
+*  Letras identificadoras:      MAT
 *
 *  Nome da base de software:    Exemplo de teste automatizado
 *  Arquivo da base de software: D:\AUTOTEST\PROJETOS\SIMPLES.BSW
 *
-*  Projeto: Disciplinas INF 1628 / 1301
-*  Gestor:  DI/PUC-Rio
-*  Autores: avs - Arndt von Staa
+*  Projeto: M√≥dulo Matriz / Programa√ß√£o Modular
+*  Gestor:  Fl√°vio Bevilacqua
+*  Autores: Gabriel Medeiros   - GM
+*           Westerbly Snaydley - WS
+*           Gustavo Aranha     - GA
 *
-*  $HA HistÛrico de evoluÁ„o:
-*     Vers„o  Autor    Data     ObservaÁıes
-*       3.00   avs   28/02/2003 UniformizaÁ„o da interface das funÁıes e
-*                               de todas as condiÁıes de retorno.
-*       2.00   avs   03/08/2002 EliminaÁ„o de cÛdigo duplicado, reestruturaÁ„o
-*       1.00   avs   15/08/2001 InÌcio do desenvolvimento
+*  $HA Hist√≥rico de evolu√ß√£o:
+*       1.00   avs   03/09/2015 Vers√£o inicial dom m√≥dulo
 *
 ***************************************************************************/
 
@@ -31,58 +29,57 @@
 
 /***********************************************************************
 *
-*  $TC Tipo de dados: MAT Descritor do nÛ da matriz
+*  $TC Tipo de dados: MAT Descritor do n√≥ da matriz
 *
 *
-*  $ED DescriÁ„o do tipo
-*     Descreve a organizaÁ„o do nÛ
+*  $ED Descri√ß√£o do tipo
+*     Descreve a organiza√ß√£o do n√≥. Guarda uma refer√™ncia para os n√≥s adjacentes, seu conte√∫do
+*	  e suas coordenadas relativas √† matriz na qual est√° contido.
 *
 ***********************************************************************/
 
-   typedef struct tpNoMatriz {
+ 	typedef struct tpNoMatriz {
 
-        struct tpNoMatriz * pNoN ; 
-		/* Ponteiro para Norte */
+         struct tpNoMatriz ** pNoN ;
+               /* Ponteiro para Norte */
 
-		struct tpNoMatriz * pNoNE ; 
-		 /* Ponteiro para Nordeste */ 
+         struct tpNoMatriz ** pNoNE ;
+               /* Ponteiro para Nordeste */
 
-		struct tpNoMatriz * pNoE ; 
-		/* Ponteiro para Leste */ 
+         struct tpNoMatriz ** pNoE ;
+               /* Ponteiro para Leste */
+               
+         struct tpNoMatriz ** pNoSE ;
+               /* Ponteiro para Sudeste */
 
+         struct tpNoMatriz ** pNoS ;
+               /* Ponteiro para Sul  */
 
-		struct tpNoMatriz * pNoSE ; 
-		/* Ponteiro para Sudeste */ 
+         struct tpNoMatriz ** pNoSW ;
+               /* Ponteiro par Sudoeste */
 
-		struct tpNoMatriz * pNoS ; 
-		/* Ponteiro para Sul */ 
+         struct tpNoMatriz ** pNoW ;
+               /* Ponteiro para Oeste */
 
-		struct tpNoMatriz * pNoSW ; 
-		/* Ponteiro par Sudoeste */ 
+         struct tpNoMatriz ** pNoNW ;
+               /* Ponteiro para Noroeste */
+               
+         LIS_tppLista Lista ;
+               /* Ponteiro para a cabe√ßa da Lista */
+               
+        int coordenadaX;
+        int coordenadaY;
 
-		struct tpNoMatriz * pNoW ; 
-		/* Ponteiro para Oeste */ 
-
-		struct tpNoMatriz * pNoNW ; 
-		/* Ponteiro para Noroeste */ 
-
-		LIS_tppLista* Lista ; 
-		/* Ponteiro para a cabeÁa da Lista */ 
-
-		int coordenadaX; 
-		int coordenadaY; 
-} tpNoMatriz ;
+   } tpNoMatriz ;
 
 /***********************************************************************
 *
-*  $TC Tipo de dados: ARV Descritor da cabeÁa de uma ·rvore
+*  $TC Tipo de dados: MAT Descritor da cabe√ßa da matriz
 *
 *
-*  $ED DescriÁ„o do tipo
-*     A cabeáa da ·rvore È o ponto de acesso para uma determinada ·rvore.
-*     Por intermÈdio da referÍncia para o nÛ corrente e do ponteiro
-*     pai pode-se navegar a ·rvore sem necessitar de uma pilha.
-*     Pode-se, inclusive, operar com a ·rvore em forma de co-rotina.
+*  $ED Descri√ß√£o do tipo
+*	A cabe√ßa da matriz guarda os metadados relativos √† matriz, al√©m de refer√™ncias para 
+*	todos os seus n√≥s (por meio de um array), e em espec√≠fico para o n√≥ de origem (0,0) e corrente.
 *
 ***********************************************************************/
 
@@ -90,79 +87,89 @@
 
 		tpNoMatriz** NosMatriz;
 
-         tpNoMatriz * pNoOrigem ;
-               /* Ponteiro para a raiz da ·rvore */
+         tpNoMatriz ** pNoOrigem ;
+               /* Ponteiro para a raiz da √°rvore */
 
-         tpNoMatriz * pNoCorr ;
-               /* Ponteiro para o nÛ corrente da matriz */
+         tpNoMatriz ** pNoCorr ;
+               /* Ponteiro para o n√≥ corrente da matriz */
+		 
 		 int tamanho;
+		 /* Tamanho n do lado da matriz. O n√∫mero total de n√≥s da matriz se d√° por n x n */
 
    } tpMatriz ;
 
-/*****  Dados encapsulados no mÛdulo  *****/
+/*****  Dados encapsulados no m√≥dulo  *****/
+   	
+   	/* Ponteiro para nulo que identifica posi√ß√µes inv√°lidas na matriz */
+	tpNoMatriz* NULL_NO_MATRIZ = NULL;
 
-	//static tpMatriz * pArvore = NULL ;
-            /* Ponteiro para a cabeáa da ·rvore */
+/***** Prot√≥tipos das fun√ß√µes encapuladas no m√≥dulo *****/
+	
+	/* Fun√ß√£o que retorna uma refer√™ncia para um n√≥ localizado nas coordenadas fornecidas, na matriz especificada */
+	tpNoMatriz** MAT_GetNoPorCoordenada(int x, int y, tpMatriz* matriz);
 
-/***** ProtÛtipos das funÁıes encapuladas no mÛdulo *****/
+	/* Fun√ß√£o que destroi uma matriz recursivamente atrav√©s do primeiro n√≥. Assertiva: o n√≥ fornecido tem de ser o n√≥ de origem. */
+    void DestroiMatriz( tpNoMatriz *pNo, tpMatriz* matriz );
 
-   //static tpNoMatriz * CriarNo( char ValorParm ) ;
+/*****  C√≥digo das fun√ß√µes exportadas pelo m√≥dulo  *****/
 
-   //static ARV_tpCondRet CriarNoRaiz( char ValorParm ) ;
-
-   //
-   void DestroiMatriz( tpNoMatriz *pNo );
-
-/*****  CÛdigo das funÁıes exportadas pelo mÛdulo  *****/
-
-/***************************************************************************
+/***********************************************************************
 *
-*  FunÁ„o: ARV Criar ·rvore
-*  ****/
-
-  /*MAT_tpCondRet MAT_CriarMatriz(tpMatriz** matriz, int n) {
-  int i;
-  tpMatriz* pMatriz = NULL;
-  tpNoMatriz* noTemp = NULL;
-  if (matriz* != NULL )
-  {
-    MAT_DestruirMatriz(matriz*) ;
-  } /* if 
- 
-  pMatriz = ( tpMatriz* ) malloc( sizeof( tpMatriz )) ;
-  if ( pMatriz == NULL )
-  {
-    return MAT_CondRetFaltouMemoria ;
-  } /* if 
-     
-     
-  pMatriz->nos = (tpNoMatriz**) malloc(sizeof(tpNoMatriz*) * n * n);
- 
-  if(pMatriz->nos == NULL) {
-    return MAT_CondRetFaltouMemoria;
-  }
- 
-  for (i = 0; i < n * n; i++)
-  {
-    pMatriz->nos = NULL;
-  }
-     
-  pMatriz->pNoOrigem = pMatriz->nos[0];
-  pMatriz->pNoCorr = pMatriz->nos[0];
- 
-  matriz* = pMatriz;
-     
-  return MAT_CondRetOK ;
- 
-} /* Fim funÁ„o: MAT Criar Matriz */
-
-/***************************************************************************
+*  $FC Fun√ß√£o: MAT Criar matriz
 *
-*  FunÁ„o: MAT Destruir matriz
-*  ****/
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Cria uma matriz com o tamanho especificado (n x n)
+*
+*  $EP Par√¢metros
+*	  $P matriz - refer√™ncia de sa√≠da para a matriz
+*	  $P n - tamanho do lado da matriz (o n√∫mero de elementos da mesma ser√° n x n)
+*
+***********************************************************************/
 
-   void MAT_DestruirMatriz(tpMatriz* matriz)
-   {
+	MAT_tpCondRet MAT_CriarMatriz(tpMatriz** matriz, int n) {
+	  int i;
+	  tpMatriz* pMatriz = NULL;
+
+	  pMatriz = (tpMatriz* ) malloc( sizeof(tpMatriz ));
+	  
+	  if ( pMatriz == NULL )
+	  {
+	    return MAT_CondRetFaltouMemoria;
+	  } /* if */
+	      
+	  //Aloca√ß√£o das refer√™ncias para os n√≥s (todas apontam para NULL inicialmente)
+	  pMatriz->NosMatriz = (tpNoMatriz**) malloc(sizeof(tpNoMatriz*) * n * n);
+	  
+	  if(pMatriz->NosMatriz == NULL) {
+	    return MAT_CondRetFaltouMemoria;
+	  } /* if */
+	  
+	  for (i = 0; i < n * n; i++)
+	  {
+	    (pMatriz->NosMatriz[i]) = NULL;
+	  } /* if */
+	  
+	  pMatriz->pNoOrigem = pMatriz->NosMatriz;
+	  pMatriz->pNoCorr = pMatriz->NosMatriz;
+
+	  *matriz = pMatriz;
+	  (*matriz)->tamanho = n;
+	  return MAT_CondRetOK ;
+	} /* Fim fun√ß√£o: MAT Criar Matriz */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Destruir Matriz
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Destroi a matriz especificada, liberando a mem√≥ria alocada por seus n√≥s.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser destru√≠da.
+*
+***********************************************************************/
+
+   void MAT_DestruirMatriz(tpMatriz* matriz) {
 
       if ( matriz != NULL )
       {
@@ -174,437 +181,444 @@
          matriz = NULL ;
       } /* if */
 
-   } /* Fim funÁ„o: MAT Destruir matriz */
+   } /* Fim fun√ß√£o: MAT Destruir matriz */
 
-/***************************************************************************
+  
+/***********************************************************************
 *
-*  FunÁ„o: ARV Adicionar filho ‡ esquerda
-*  ****/
+*  $FC Fun√ß√£o: MAT Insere n√≥
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Insere um n√≥ na posi√ß√£o (x, y) especificada, com o conte√∫do descrito.
+*	  NOTA: Esta fun√ß√£o N√ÉO altera o n√≥ corrente da matriz.
+*
+*  $EP Par√¢metros
+*	  $P x - Coordenada x
+*	  $P y - Coordenada y
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*	  $P conteudoLista - vetor de ponteiros para caracteres que ser√£o inseridos na lista.
+*
+***********************************************************************/
 
-  MAT_tpCondRet MAT_CriarMatriz(tpMatriz** matriz, int n) {
+int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
+  tpNoMatriz* novoNo;
+  tpNoMatriz** temp = NULL;
   int i;
-  tpMatriz* pMatriz = NULL;
-  tpNoMatriz* noTemp = NULL;
-  if (*matriz != NULL )
-  {
-    MAT_DestruirMatriz(*matriz) ;
-  } /* if */
-
-  pMatriz = (tpMatriz* ) malloc( sizeof(tpMatriz )) ;
-  if ( pMatriz == NULL )
-  {
-    return MAT_CondRetFaltouMemoria ;
-  } /* if */
-      
-      
-  pMatriz->NosMatriz = (tpNoMatriz**) malloc(sizeof(tpNoMatriz*) * n * n);
-  
-  if(pMatriz->NosMatriz == NULL) {
-    return MAT_CondRetFaltouMemoria;
+  LIS_tppLista lista = NULL;
+ 
+  temp = MAT_GetNoPorCoordenada(x, y, matriz);
+  if(temp == &NULL_NO_MATRIZ) {
+	return MAT_CondRetCoordenadaForaDaMatriz;
   }
+  novoNo = (tpNoMatriz*)malloc(sizeof(tpNoMatriz));
   
-  for (i = 0; i < n * n; i++)
-  {
-    pMatriz->NosMatriz = NULL;
-  }
-      
-  pMatriz->pNoOrigem = pMatriz->NosMatriz[0];
-  pMatriz->pNoCorr = pMatriz->NosMatriz[0];
-
-  *matriz = pMatriz;
-      
-  return MAT_CondRetOK ;
-} /* Fim funÁ„o: MAT Criar Matriz */
-  
-//funÁ„o auxiliar
-//assume que o tamanho est· correto
-tpNoMatriz** MAT_GetNoPorCoordenada(int x, int y, tpMatriz* matriz) {
-  int n = matriz->tamanho;
-  int index = y * n + x;
-  if(index < 0 || index > n*n)
-    return NULL;
-  return matriz->NosMatriz + (y * n + x);
-}
-
-MAT_tpCondRet MAT_InsereNo(int x, int y, tpMatriz* matriz, LIS_tppLista* lista) {
-  tpNoMatriz* novoNo = (tpNoMatriz*)malloc(sizeof(tpNoMatriz));
   if(novoNo == NULL) {
     return MAT_CondRetFaltouMemoria;
   }
-    
-  novoNo->Lista = lista;  
-  *(MAT_GetNoPorCoordenada(x, y, matriz)) = novoNo;
+  if(matriz == NULL) {
+	return MAT_CondRetMatrizNaoExiste;
+  }
+
+  lista = LIS_CriarLista(NULL);
+  for(i = 0; i < sizeof(conteudoLista) / sizeof(char*); i++) {
+	LIS_InserirElementoApos(lista, conteudoLista[i]);
+  }
+
+  novoNo->coordenadaX = x;
+  novoNo->coordenadaY = y;
+  novoNo->Lista = lista;
   
+  *temp = novoNo;
+  
+  	/* Seguindo a representa√ß√£o da matriz na seguinte forma (ex. matriz 3x3):
+	 	| x - 1, y - 1		x, y - 1	 x + 1, y - 1 |
+	 
+	 	| x - 1, y			x, y		 x + 1, y	  |
+
+	 	| x - 1, y + 1		x, y + 1	 x + 1, y + 1 |
+
+	*/
+
   //norte
-  novoNo->pNoN = *(MAT_GetNoPorCoordenada(x, y - 1, matriz));
+  novoNo->pNoN = (MAT_GetNoPorCoordenada(x, y - 1, matriz));
   //nordeste
-  novoNo->pNoNE = *(MAT_GetNoPorCoordenada(x - 1, y - 1, matriz));
+  novoNo->pNoNE = (MAT_GetNoPorCoordenada(x + 1, y - 1, matriz));
   //leste
-  novoNo->pNoE = *(MAT_GetNoPorCoordenada(x + 1, y, matriz));
+  novoNo->pNoE = (MAT_GetNoPorCoordenada(x + 1, y, matriz));
   //sudeste
-  novoNo->pNoSE = *(MAT_GetNoPorCoordenada(x + 1, y + 1, matriz));
+  novoNo->pNoSE = (MAT_GetNoPorCoordenada(x + 1, y + 1, matriz));
   //sul
-  novoNo->pNoS = *(MAT_GetNoPorCoordenada(x, y + 1, matriz));
+  novoNo->pNoS = (MAT_GetNoPorCoordenada(x, y + 1, matriz));
   //sudoeste
-  novoNo->pNoN = *(MAT_GetNoPorCoordenada(x - 1, y + 1, matriz));
+  novoNo->pNoSW = (MAT_GetNoPorCoordenada(x - 1, y + 1, matriz));
   //oeste
-  novoNo->pNoW = *(MAT_GetNoPorCoordenada(x - 1, y, matriz));
+  novoNo->pNoW = (MAT_GetNoPorCoordenada(x - 1, y, matriz));
   //noroeste
-  novoNo->pNoNW = *(MAT_GetNoPorCoordenada(x - 1, y - 1, matriz));
+  novoNo->pNoNW = (MAT_GetNoPorCoordenada(x - 1, y - 1, matriz));
   
   return MAT_CondRetOK;
 }
 
-/***
-FunÁ„o: MAT Ir Norte
-* ****/
-
-MAT_tpCondRet MAT_IrN ( tpMatriz* pMatriz )
-{
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr->coordenadaY == 0 )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoN ;
-
-  return MAT_CondRetOK ;
-  } 
- /* Fim funÁ„o: MAT Ir Norte */
-
-/***
-FunÁ„o: MAT Ir Nordeste
-* ****/
-MAT_tpCondRet MAT_IrNE ( tpMatriz * pMatriz )
-{
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-  if ( (pMatriz->pNoCorr->coordenadaY == 0 ) || ( pMatriz->pNoCorr->coordenadaX == pMatriz->tamanho - 1) )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoNE ;
-  return MAT_CondRetOK ;
-  }  /* Fim funÁ„o: MAT Ir Nordeste */
-
-/***
-FunÁ„o: MAT Ir Leste
-* ****/
-MAT_tpCondRet MAT_IrE ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr->coordenadaX == pMatriz->tamanho - 1 )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoE ;
-
-  return MAT_CondRetOK ;
-  } 
- /* Fim funÁ„o: MAT Ir Leste */
-
-/***
-FunÁ„o: MAT Ir Sudeste
-* ****/
-
-MAT_tpCondRet MAT_IrSE ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( (pMatriz->pNoCorr->coordenadaY == pMatriz->tamanho - 1 ) || ( pMatriz->pNoCorr->coordenadaX == pMatriz->tamanho - 1) )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoSE ;
-
-  return MAT_CondRetOK ;
-  } 
- /* Fim funÁ„o: MAT Ir Sudeste */
-
-/***
-FunÁ„o: MAT Ir Sul
-* ****/
-
-MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr->coordenadaY == pMatriz->tamanho - 1 )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoS ;
-
-  return MAT_CondRetOK ;
-  } 
- /* Fim funÁ„o: MAT Ir Sul */
-
-/***
-FunÁ„o: MAT Ir Sudoeste
-* ****/
-
-MAT_tpCondRet MAT_IrSW ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( (pMatriz->pNoCorr->coordenadaX == 0 ) || ( pMatriz->pNoCorr->coordenadaY == pMatriz->tamanho - 1) )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoSW ;
-
-  return MAT_CondRetOK ;
-  }  /* Fim funÁ„o: MAT Ir Sudoeste */
-
-/***
-FunÁ„o: MAT Ir Oeste
-* ****/
-
-MAT_tpCondRet MAT_IrW ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr->coordenadaX == 0 )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoW ;
-
-  return MAT_CondRetOK ;
-  }  /* Fim funÁ„o: MAT Ir Oeste */
-
-/***
-FunÁ„o: MAT Ir Noroeste
-* ****/
-
-MAT_tpCondRet MAT_IrNW ( tpMatriz * pMatriz )
-{
-
-  if ( pMatriz == NULL )
-  {
-     //return MAT_CondRetMatrizNaoExiste ;
-  } /* if */
-
-  if ( pMatriz->pNoCorr == NULL )
-  {
-     //return MAT_CondRetMatrizVazia ;
-  } /* if */
-
-  if ( (pMatriz->pNoCorr->coordenadaX == 0 ) || ( pMatriz->pNoCorr->coordenadaY == 0) )
-  {
-     //return MAT_CondRetNoEstaNaBorda ;
-  } /* if */
-
-  pMatriz->pNoCorr = pMatriz->pNoCorr->pNoNW ;
-
-  return MAT_CondRetOK ;
-  }  /* Fim funÁ„o: MAT Ir Noroeste */
-
-/***************************************************************************
-*
-*  FunÁ„o: MAT Obter valor corrente
-*  ****/
-
-   MAT_tpCondRet MAT_ObterValorCorr(tpMatriz* matriz, LIS_tppLista * ValorParm )
-   {
-
-      if ( matriz == NULL )
-      {
-         //return MAT_CondRetMatrizNaoExiste ;
-      } /* if */
-      if ( matriz->pNoCorr == NULL )
-      {
-         //return MAT_CondRetMatrizVazia ;
-      } /* if */
-      /*while(matriz->pNoCorr->Valor!=NULL)
-      {
-        if(LIS_InserirElementoApos(* ValorParm ,LIS_ObterValor(matriz->pNoCorr->Valor))!=LIS_CondRetOK)
-        {
-          //return LIS_CondRetFaltouMemoria;
-        }
-        /*if(LIS_tpCondRet LIS_AvancarElementoCorrente( matriz->pNoCorr->Valor , 1 ) == LIS_CondRetOK)
-        {
-          *ValorParm->pElemCorr = *ValorParm->pElemCorr->pProx;
-        }
-      }*/
-      /*IrInicioLista(matriz->pNoCorr->Valor);
-      IrInicioLista(*ValorParm);*/
-    
-      
-      return MAT_CondRetOK ;
-
-   } /* Fim funÁ„o: MAT Obter valor corrente */
-
-
-/*****  CÛdigo das funÁıes encapsuladas no mÛdulo  *****/
-
+/* Fim fun√ß√£o: MAT InsereNo*/
 
 /***********************************************************************
 *
-*  $FC FunÁ„o: ARV Criar nÛ da ·rvore
+*  $FC Fun√ß√£o: MAT Ir Norte
 *
-*  $FV Valor retornado
-*     Ponteiro para o nÛ criado.
-*     Ser· NULL caso a memÛria tenha se esgotado.
-*     Os ponteiros do nÛ criado estar„o nulos e o valor È igual ao do
-*     par‚metro.
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Norte (x, y - 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
 ***********************************************************************/
 
-   /*tpNoArvore * CriarNo( char ValorParm )
-   {
+	MAT_tpCondRet MAT_IrN ( tpMatriz * pMatriz ) {
 
-      tpNoArvore * pNo ;
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
 
-      pNo = ( tpNoArvore * ) malloc( sizeof( tpNoArvore )) ;
-      if ( pNo == NULL )
-      {
-         return NULL ;
-      } /* if 
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
 
-      pNo->pNoPai = NULL ;
-      pNo->pNoEsq = NULL ;
-      pNo->pNoDir = NULL ;
-      pNo->Valor  = ValorParm ;
-      return pNo ;
+	  if ( (*pMatriz->pNoCorr)->pNoN == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
 
-   } /* Fim funÁ„o: ARV Criar nÛ da ·rvore */
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoN;
 
+	  return MAT_CondRetOK ;
+	} /* Fim fun√ß√£o: MAT Ir Norte */
 
 /***********************************************************************
 *
-*  $FC FunÁ„o: ARV Criar nÛ raiz da ·rvore
+*  $FC Fun√ß√£o: MAT Ir Nordeste
 *
-*  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetFaltouMemoria
-*     ARV_CondRetNaoCriouRaiz
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Nordeste (x + 1, y - 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
 ***********************************************************************/
 
-   /*ARV_tpCondRet CriarNoRaiz( char ValorParm )
-   {
+	MAT_tpCondRet MAT_IrNE ( tpMatriz * pMatriz ) {
 
-      ARV_tpCondRet CondRet ;
-      tpNoArvore * pNo ;
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
 
-      if ( pArvore == NULL )
-      {
-         CondRet = ARV_CriarArvore( ) ;
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
 
-         if ( CondRet != ARV_CondRetOK )
-         {
-            return CondRet ;
-         } /* if 
-      } /* if 
+	  if ( (*pMatriz->pNoCorr)->pNoNE == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
 
-      if ( pArvore->pNoRaiz == NULL )
-      {
-         pNo = CriarNo( ValorParm ) ;
-         if ( pNo == NULL )
-         {
-            return ARV_CondRetFaltouMemoria ;
-         } /* if 
-         pArvore->pNoRaiz = pNo ;
-         pArvore->pNoCorr = pNo ;
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoNE;
 
-         return ARV_CondRetOK ;
-      } /* if 
+	  return MAT_CondRetOK ;
+	} /* Fim fun√ß√£o: MAT Ir Nordeste */
 
-      return ARV_CondRetNaoCriouRaiz ;
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Leste
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Leste (x + 1, y) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+	MAT_tpCondRet MAT_IrE ( tpMatriz * pMatriz ) {
 
-   } /* Fim funÁ„o: ARV Criar nÛ raiz da ·rvore */
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoE == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoE;
+
+	  return MAT_CondRetOK ;
+  	} /* Fim fun√ß√£o: MAT Ir Leste */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Sudeste
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Sudeste (x + 1, y + 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+
+	MAT_tpCondRet MAT_IrSE ( tpMatriz * pMatriz ) {
+
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoSE == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoSE;
+
+	  return MAT_CondRetOK ;
+  	} /* Fim fun√ß√£o: MAT Ir Sudeste */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Sul
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Sul (x, y + 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+
+MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoS == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoS;
+
+	  return MAT_CondRetOK ;
+  } /* Fim fun√ß√£o: MAT Ir Sul */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Sudoeste
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Sudoeste (x - 1, y + 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+	MAT_tpCondRet MAT_IrSW ( tpMatriz * pMatriz ) {
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoSW == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoSW;
+
+	  return MAT_CondRetOK ;
+  	}  /* Fim fun√ß√£o: MAT Ir Sudoeste */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Oeste
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Oeste (x - 1, y) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+
+	MAT_tpCondRet MAT_IrW ( tpMatriz * pMatriz ) {
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoW == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoW;
+
+	  return MAT_CondRetOK ;
+  	}  /* Fim fun√ß√£o: MAT Ir Oeste */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Ir Noroeste
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Altera o n√≥ corrente para o localizado ao Noroeste (x - 1, y - 1) do n√≥ corrente atual.
+*
+*  $EP Par√¢metros
+*	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+***********************************************************************/
+
+	MAT_tpCondRet MAT_IrNW ( tpMatriz * pMatriz ) {
+	  if ( pMatriz == NULL )
+	  {
+	     return MAT_CondRetMatrizNaoExiste ;
+	  } /* if */
+
+	  if ( *pMatriz->pNoCorr == NULL )
+	  {
+	     return MAT_CondRetMatrizVazia ;
+	  } /* if */
+
+	  if ( (*pMatriz->pNoCorr)->pNoNW == &NULL_NO_MATRIZ )
+	  {
+	     return MAT_CondRetNoEstaNaBorda ;
+	  } /* if */
+
+	  pMatriz->pNoCorr = (*pMatriz->pNoCorr)->pNoNW;
+
+	  return MAT_CondRetOK ;
+  	}  /* Fim fun√ß√£o: MAT Ir Noroeste */
+
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Obter valor corrente
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Obtem o valor do n√≥ corrente na matriz especificada
+*
+*  $EP Par√¢metros
+*     $P matriz - Ponteiro para a matriz cujo valor corrente √© requerido
+*	  $P saida - Ponteiro para char que receber√° o valor recuperado
+*
+***********************************************************************/
+	int MAT_ObterValorCorr( tpMatriz *matriz, char * saida )
+	{
+		if(matriz==NULL) {
+			return MAT_CondRetMatrizNaoExiste;
+		}
+		
+		if(matriz->pNoCorr==NULL) {
+			return MAT_CondRetMatrizVazia;
+		}
+		
+		*saida = *(char*)LIS_ObterValor((*matriz->pNoCorr)->Lista);
+		
+	    return MAT_CondRetOK;
+   } /* Fim fun√ß√£o: MAT Obter valor corrente */
+
+
+/*****  C√≥digo das fun√ß√µes encapsuladas no m√≥dulo  *****/
 
 
 /***********************************************************************
 *
-*  $FC FunÁ„o: ARV Destruir a estrutura da ·rvore
+*  $FC Fun√ß√£o: MAT Destruir a estrutura da matriz
 *
 *  $EAE Assertivas de entradas esperadas
-*     pNoArvore != NULL
+*     pNo != NULL e correspondente ao n√≥ de origem da matriz (exceto em recurs√£o)
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Destroi uma matriz recursivamente atrav√©s do primeiro n√≥.
+*
+*  $EP Par√¢metros
+*     $P pNo - Ponteiro para o n√≥ que inicia a propaga√ß√£o
+*	  $P matriz - Ponteiro para a matriz a ser destru√≠da
 *
 ***********************************************************************/
 
-   void DestroiMatriz(tpNoMatriz *pNo)
-   {
-      if ( pNo->pNoE != NULL ) {
-         DestroiMatriz( pNo->pNoE );
-       /* if */
-	  }
-      if(pNo->pNoS != NULL)
-         DestroiMatriz( pNo->pNoS ) ;
-       /* if */
+	void DestroiMatriz( tpNoMatriz * pNo, tpMatriz* matriz ) {
+		if(pNo == NULL) {
+			return;
+		}
+	    
+	    if ( pNo->pNoE != &NULL_NO_MATRIZ ) {
+	        DestroiMatriz( *pNo->pNoE, matriz) ;
+	    } /* if */
 
-      free( pNo ) ;
+	    if ( pNo->pNoS != &NULL_NO_MATRIZ) {
+	        DestroiMatriz( *pNo->pNoS, matriz) ;
+	    } /* if */
 
-   } /* Fim funÁ„o: MAT Destruir a estrutura da matriz */
+		LIS_EsvaziarLista(pNo->Lista);
+		  
+		*(MAT_GetNoPorCoordenada(pNo->coordenadaX, pNo->coordenadaY, matriz)) = NULL;
+		  
+	    free( pNo ) ;
+	} /* Fim fun√ß√£o auxiliar: MAT Destroi Matriz */
+	    
+/***********************************************************************
+*
+*  $FC Fun√ß√£o: MAT Recupera n√≥ por coordenada
+*
+*  $ED Descri√ß√£o da fun√ß√£o
+*     Recupera um n√≥ localizado nas coordenadas especificadas, ou um
+*     ponteiro para NULL caso a posi√ß√£o seja inv√°lida.
+*
+*  $EP Par√¢metros
+*     $P x - Coordenada X (eixo horizontal)
+*	  $P y - Coordenada y (eixo vertical)
+*	  $P matriz - Ponteiro para a matriz que contem o n√≥ requisitado
+*
+***********************************************************************/
+      
+	tpNoMatriz** MAT_GetNoPorCoordenada(int x, int y, tpMatriz* matriz) {
+	  int n = matriz->tamanho;
+	  int index = y * n + x;
 
-/********** Fim do mÛdulo de implementaÁ„o: MÛdulo matriz **********/
+	  //Checagem para identificar se os par√¢metros condizem com o tamanho da matriz
+	  if((y * n < 0 || x < 0) || (y > n - 1 || x > n - 1)) {
+	    return &NULL_NO_MATRIZ;
+	  } /* if */
 
+	  return matriz->NosMatriz + index;
+	} /* Fim fun√ß√£o: MAT Recuperar n√≥ em coordenada espec√≠fica */
+
+/********** Fim do m√≥dulo de implementa√ß√£o: M√≥dulo matriz **********/
