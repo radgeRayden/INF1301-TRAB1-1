@@ -169,19 +169,18 @@
 *
 ***********************************************************************/
 
-   void MAT_DestruirMatriz(tpMatriz* matriz) {
-
+   	MAT_tpCondRet MAT_DestruirMatriz(tpMatriz* matriz) {
+ 
       if ( matriz != NULL )
       {
-         if ( matriz->pNoOrigem != NULL )
-         {
-            DestroiMatriz( matriz->pNoOrigem ) ;
-         } /* if */
+         DestroiMatriz( *matriz->pNoOrigem, matriz ) ;         
          free( matriz ) ;
-         matriz = NULL ;
+      }
+	  else {
+	  	return MAT_CondRetMatrizNaoExiste;
       } /* if */
-
-   } /* Fim função: MAT Destruir matriz */
+	  return MAT_CondRetOK;
+   	} /* Fim função: MAT Destruir matriz */
 
   
 /***********************************************************************
