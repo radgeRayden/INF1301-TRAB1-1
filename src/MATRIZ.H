@@ -41,6 +41,7 @@
    #define MATRIZ_EXT extern
 #endif
 
+#include "LISTA.H"
 
 /***********************************************************************
 *
@@ -178,7 +179,7 @@
 *
 ***********************************************************************/
 
-   void MAT_DestruirMatriz(tpMatriz* matriz) ;
+   MAT_tpCondRet MAT_DestruirMatriz(tpMatriz* matriz) ;
 
 /***********************************************************************
 *

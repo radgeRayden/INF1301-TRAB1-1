@@ -25,8 +25,6 @@
 #include "MATRIZ.H"
 #undef MATRIZ_OWN
 
-#include "LISTA.H"
-
 
 
 /*****  Dados encapsulados no módulo  *****/
