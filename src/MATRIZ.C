@@ -147,7 +147,11 @@ MAT_tpCondRet MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista)
   tpNoMatriz** temp = NULL;
   int i;
   LIS_tppLista lista = NULL;
- 
+  
+  if(matriz == NULL) {
+	return MAT_CondRetMatrizNaoExiste;
+  }
+
   temp = MAT_GetNoPorCoordenada(x, y, matriz);
   if(temp == &NULL_NO_MATRIZ) {
 	return MAT_CondRetCoordenadaForaDaMatriz;
@@ -157,9 +161,7 @@ MAT_tpCondRet MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista)
   if(novoNo == NULL) {
     return MAT_CondRetFaltouMemoria;
   }
-  if(matriz == NULL) {
-	return MAT_CondRetMatrizNaoExiste;
-  }
+  
 
   lista = LIS_CriarLista(NULL);
   for(i = 0; i < sizeof(conteudoLista) / sizeof(char*); i++) {
@@ -540,9 +542,9 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 			return MAT_CondRetMatrizNaoExiste;
 		}
 		
-		if(matriz->pNoCorr==NULL) {
+		if(*matriz->pNoCorr == NULL) {
 			return MAT_CondRetMatrizVazia;
-		}
+		}	
 		
 		*saida = *(char*)LIS_ObterValor((*matriz->pNoCorr)->Lista);
 		
@@ -615,5 +617,7 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 
 	  return matriz->NosMatriz + index;
 	} /* Fim função: MAT Recuperar nó em coordenada específica */
+
+
 
 /********** Fim do módulo de implementação: Módulo matriz **********/
