@@ -27,76 +27,7 @@
 
 #include "LISTA.H"
 
-/***********************************************************************
-*
-*  $TC Tipo de dados: MAT Descritor do nó da matriz
-*
-*
-*  $ED Descrição do tipo
-*     Descreve a organização do nó. Guarda uma referência para os nós adjacentes, seu conteúdo
-*	  e suas coordenadas relativas à matriz na qual está contido.
-*
-***********************************************************************/
 
- 	typedef struct tpNoMatriz {
-
-         struct tpNoMatriz ** pNoN ;
-               /* Ponteiro para Norte */
-
-         struct tpNoMatriz ** pNoNE ;
-               /* Ponteiro para Nordeste */
-
-         struct tpNoMatriz ** pNoE ;
-               /* Ponteiro para Leste */
-               
-         struct tpNoMatriz ** pNoSE ;
-               /* Ponteiro para Sudeste */
-
-         struct tpNoMatriz ** pNoS ;
-               /* Ponteiro para Sul  */
-
-         struct tpNoMatriz ** pNoSW ;
-               /* Ponteiro par Sudoeste */
-
-         struct tpNoMatriz ** pNoW ;
-               /* Ponteiro para Oeste */
-
-         struct tpNoMatriz ** pNoNW ;
-               /* Ponteiro para Noroeste */
-               
-         LIS_tppLista Lista ;
-               /* Ponteiro para a cabeça da Lista */
-               
-        int coordenadaX;
-        int coordenadaY;
-
-   } tpNoMatriz ;
-
-/***********************************************************************
-*
-*  $TC Tipo de dados: MAT Descritor da cabeça da matriz
-*
-*
-*  $ED Descrição do tipo
-*	A cabeça da matriz guarda os metadados relativos à matriz, além de referências para 
-*	todos os seus nós (por meio de um array), e em específico para o nó de origem (0,0) e corrente.
-*
-***********************************************************************/
-
-   typedef struct MAT_tpMatriz {
-
-		tpNoMatriz** NosMatriz;
-
-         tpNoMatriz ** pNoOrigem ;
-               /* Ponteiro para a raiz da árvore */
-
-         tpNoMatriz ** pNoCorr ;
-               /* Ponteiro para o nó corrente da matriz */
-		 
-		 int tamanho;
-		 /* Tamanho n do lado da matriz. O número total de nós da matriz se dá por n x n */
-
-   } tpMatriz ;
 
 /*****  Dados encapsulados no módulo  *****/
    	
@@ -123,6 +54,10 @@
 *  $EP Parâmetros
 *	  $P matriz - referência de saída para a matriz
 *	  $P n - tamanho do lado da matriz (o número de elementos da mesma será n x n)
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetFaltouMemoria
 *
 ***********************************************************************/
 
@@ -166,6 +101,10 @@
 *
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser destruída.
+*     
+*  $FV Valor retornado
+*	 MAT_CondRetMatrizNaoExiste
+*	 MAT_CondRetOK
 *
 ***********************************************************************/
 
@@ -196,6 +135,12 @@
 *	  $P y - Coordenada y
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *	  $P conteudoLista - vetor de ponteiros para caracteres que serão inseridos na lista.
+*
+*   $FV Valor retornado
+*	  MAT_CondRetMatrizNaoExiste
+*	  MAT_CondRetCoordenadaForaDaMatriz
+*	  MAT_CondRetFaltouMemoria
+*     MAT_CondRetOK
 *
 ***********************************************************************/
 
@@ -270,6 +215,12 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
 ***********************************************************************/
 
 	MAT_tpCondRet MAT_IrN ( tpMatriz * pMatriz ) {
@@ -303,6 +254,12 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
 *
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
 *
 ***********************************************************************/
 
@@ -338,6 +295,12 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
 ***********************************************************************/
 	MAT_tpCondRet MAT_IrE ( tpMatriz * pMatriz ) {
 
@@ -370,6 +333,12 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
 *
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
 *
 ***********************************************************************/
 
@@ -405,6 +374,12 @@ int MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista) {
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
 ***********************************************************************/
 
 MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
@@ -438,6 +413,12 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
 ***********************************************************************/
 	MAT_tpCondRet MAT_IrSW ( tpMatriz * pMatriz ) {
 	  if ( pMatriz == NULL )
@@ -469,6 +450,12 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 *
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
 *
 ***********************************************************************/
 
@@ -503,6 +490,12 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 *  $EP Parâmetros
 *	  $P matriz - Ponteiro para a matriz a ser manipulada
 *
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
 ***********************************************************************/
 
 	MAT_tpCondRet MAT_IrNW ( tpMatriz * pMatriz ) {
@@ -536,6 +529,11 @@ MAT_tpCondRet MAT_IrS ( tpMatriz * pMatriz ) {
 *  $EP Parâmetros
 *     $P matriz - Ponteiro para a matriz cujo valor corrente é requerido
 *	  $P saida - Ponteiro para char que receberá o valor recuperado
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
 *
 ***********************************************************************/
 	int MAT_ObterValorCorr( tpMatriz *matriz, char * saida )

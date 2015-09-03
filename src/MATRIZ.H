@@ -2,20 +2,23 @@
 #define MATRIZ_
 /***************************************************************************
 *
-*  $MCD Módulo de definição: Módulo árvore
+*  $MCD Módulo de definição: Módulo matriz
 *
 *  Arquivo gerado:              MATRIZ.H
-*  Letras identificadoras:      ARV
+*  Letras identificadoras:      MAT
 *
 *  Nome da base de software:    Exemplo de teste automatizado
 *  Arquivo da base de software: D:\AUTOTEST\PROJETOS\SIMPLES.BSW
 *
-*  Projeto: Disciplinas INF 1628 / 1301
-*  Gestor:  DI/PUC-Rio
-*  Autores: avs - Arndt von Staa
+*  Projeto: Módulo Matriz / Programação Modular
+*  Gestor:  Flávio Bevilacqua
+*  Autores: Gabriel Medeiros   - GM
+*           Westerbly Snaydley - WS
+*           Gustavo Aranha     - GA
 *
 *  $HA Histórico de evolução:
 *     Versão  Autor    Data     Observações
+*		4.00   GA    29/08/2015 Adaptação das funções do módulo arvore.c para matriz.c
 *       3.00   avs   28/02/2003 Uniformização da interface das funções e
 *                               de todas as condições de retorno.
 *       2.00   avs   03/08/2002 Eliminação de código duplicado, reestruturação
@@ -23,14 +26,12 @@
 *
 *  $ED Descrição do módulo
 *     Este módulo implementa um conjunto simples de funções para criar e
-*     explorar árvores binárias.
-*     A árvore possui uma cabeça que contém uma referência para a raíz da
-*     árvore e outra para um nó corrente da árvore.
-*     A cada momento o módulo admite no máximo uma única árvore.
-*     Ao iniciar a execução do programa não existe árvore.
-*     A árvore poderá estar vazia. Neste caso a raiz e o nó corrente
+*     explorar matrizes n x n.
+*     A matriz possui uma cabeça que contém uma referência para um nó de origem (0,0)
+*     e outra para um nó corrente da matriz.
+*     Após criada, uma matriz é vazia. Neste caso a origem e o nó corrente
 *     serão nulos, embora a cabeça esteja definida.
-*     O nó corrente será nulo se e somente se a árvore estiver vazia.
+*     O nó corrente será nulo se e somente se a matriz estiver vazia.
 *
 ***************************************************************************/
  
@@ -43,7 +44,7 @@
 
 /***********************************************************************
 *
-*  $TC Tipo de dados: ARV Condicoes de retorno
+*  $TC Tipo de dados: MAT Condicoes de retorno
 *
 *
 ***********************************************************************/
@@ -53,40 +54,104 @@
          MAT_CondRetOK = 0 ,
                /* Executou correto */
 
-         MAT_CondRetNaoCriouRaiz = 1 ,
-               /* Não criou nó raiz */
+         MAT_CondRetFaltouMemoria = 1 ,
+               /* Faltou memória ao alocar dados */
 
-         MAT_CondRetErroEstrutura = 2 ,
-               /* Estrutura da árvore está errada */
-
-         MAT_CondRetNaoEhFolha = 3 ,
-               /* Não é folha relativa à direção de inserção desejada */
-
-         MAT_CondRetMATRIZNaoExiste = 4 ,
+         MAT_CondRetMatrizNaoExiste = 2 ,
                /* Árvore não existe */
 
-         MAT_CondRetMATRIZVazia = 5 ,
+         MAT_CondRetMatrizVazia = 3 ,
                /* Árvore está vazia */
 
-         MAT_CondRetNohEhRaiz = 6 ,
-               /* Nó corrente é raiz */
+         MAT_CondRetNoEstaNaBorda = 4,
+               /* Não é possível trafegar na referida direção já que está na borda da matriz */
 
-         MAT_CondRetNaoPossuiFilho = 7 ,
-               /* Nó corrente não possui filho na direção desejada */
-
-         MAT_CondRetFaltouMemoria = 8
-               /* Faltou memória ao alocar dados */
+		MAT_CondRetCoordenadaForaDaMatriz = 5
+			/*Coordenadas fornecidas não se encontram dentro da matriz*/
 
    } MAT_tpCondRet ;
 
+/***********************************************************************
+*
+*  $TC Tipo de dados: MAT Descritor do nó da matriz
+*
+*
+*  $ED Descrição do tipo
+*     Descreve a organização do nó. Guarda uma referência para os nós adjacentes, seu conteúdo
+*    e suas coordenadas relativas à matriz na qual está contido.
+*
+***********************************************************************/
+
+   typedef struct tpNoMatriz {
+
+         struct tpNoMatriz ** pNoN ;
+               /* Ponteiro para Norte */
+
+         struct tpNoMatriz ** pNoNE ;
+               /* Ponteiro para Nordeste */
+
+         struct tpNoMatriz ** pNoE ;
+               /* Ponteiro para Leste */
+               
+         struct tpNoMatriz ** pNoSE ;
+               /* Ponteiro para Sudeste */
+
+         struct tpNoMatriz ** pNoS ;
+               /* Ponteiro para Sul  */
+
+         struct tpNoMatriz ** pNoSW ;
+               /* Ponteiro par Sudoeste */
+
+         struct tpNoMatriz ** pNoW ;
+               /* Ponteiro para Oeste */
+
+         struct tpNoMatriz ** pNoNW ;
+               /* Ponteiro para Noroeste */
+               
+         LIS_tppLista Lista ;
+               /* Ponteiro para a cabeça da Lista */
+               
+        int coordenadaX;
+        int coordenadaY;
+
+   } tpNoMatriz ;
 
 /***********************************************************************
 *
-*  $FC Função: MAT Criar árvore
+*  $TC Tipo de dados: MAT Descritor da cabeça da matriz
+*
+*
+*  $ED Descrição do tipo
+*  A cabeça da matriz guarda os metadados relativos à matriz, além de referências para 
+*  todos os seus nós (por meio de um array), e em específico para o nó de origem (0,0) e corrente.
+*
+***********************************************************************/
+
+   typedef struct MAT_tpMatriz {
+
+      tpNoMatriz** NosMatriz;
+
+         tpNoMatriz ** pNoOrigem ;
+               /* Ponteiro para a raiz da árvore */
+
+         tpNoMatriz ** pNoCorr ;
+               /* Ponteiro para o nó corrente da matriz */
+       
+       int tamanho;
+       /* Tamanho n do lado da matriz. O número total de nós da matriz se dá por n x n */
+
+   } tpMatriz ;
+
+/***********************************************************************
+*
+*  $FC Função: MAT Criar matriz
 *
 *  $ED Descrição da função
-*     Cria uma nova árvore vazia.
-*     Caso já exista uma árvore, esta será destruída.
+*     Cria uma matriz vazia capaz de acomodar o número de elementos especificado (n x n)
+*
+*  $EP Parâmetros
+*    $P matriz - referência de saída para a matriz
+*    $P n - tamanho do lado da matriz (o número de elementos da mesma será n x n)
 *
 *  $FV Valor retornado
 *     MAT_CondRetOK
@@ -94,119 +159,238 @@
 *
 ***********************************************************************/
 
-   MAT_tpCondRet MAT_CriarMatriz( void ) ;
+   MAT_tpCondRet MAT_CriarMatriz( tpMatriz** matriz, int n ) ;
 
 
 /***********************************************************************
 *
-*  $FC Função: ARV Destruir árvore
+*  $FC Função: MAT Destruir Matriz
 *
 *  $ED Descrição da função
-*     Destrói o corpo e a cabeça da árvore, anulando a árvore corrente.
-*     Faz nada caso a árvore corrente não exista.
-*
-***********************************************************************/
-
-   void MAT_DestruirMatriz(void* matriz) ;
-
-
-/***********************************************************************
-*
-*  $FC Função: ARV Adicionar filho à esquerda
+*     Destroi a matriz especificada, liberando a memória alocada por seus nós.
 *
 *  $EP Parâmetros
-*     $P ValorParm - valor a ser inserido no novo nó.
-*
+*    $P matriz - Ponteiro para a matriz a ser destruída.
+*     
 *  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetErroEstrutura
-*     ARV_CondRetFaltouMemoria
-*     ARV_CondRetNaoEhFolha     - caso não seja folha para a esquerda
+*   MAT_CondRetMatrizNaoExiste
+*   MAT_CondRetOK
 *
 ***********************************************************************/
 
-   //ARV_tpCondRet ARV_InserirEsquerda( char ValorParm ) ;
-
+   void MAT_DestruirMatriz(tpMatriz* matriz) ;
 
 /***********************************************************************
 *
-*  $FC Função: ARV Adicionar filho à direita
+*  $FC Função: MAT Insere nó
+*
+*  $ED Descrição da função
+*     Insere um nó na posição (x, y) especificada, com o conteúdo descrito.
+*    NOTA: Esta função NÃO altera o nó corrente da matriz.
 *
 *  $EP Parâmetros
-*     $P ValorParm - valor a ser inserido no novo nó
+*    $P x - Coordenada x
+*    $P y - Coordenada y
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*    $P conteudoLista - vetor de ponteiros para caracteres que serão inseridos na lista.
 *
-*  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetErroEstrutura
-*     ARV_CondRetFaltouMemoria
-*     ARV_CondRetNaoEhFolha     - caso não seja folha para a direita
-*
-***********************************************************************/
-
-   //ARV_tpCondRet ARV_InserirDireita( char ValorParm ) ;
-
-
-/***********************************************************************
-*
-*  $FC Função: ARV Ir para nó pai
-*
-*  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetMATRIZNaoExiste
-*     ARV_CondRetMATRIZVazia
-*     ARV_CondRetNoEhRaiz
+*   $FV Valor retornado
+*    MAT_CondRetMatrizNaoExiste
+*    MAT_CondRetCoordenadaForaDaMatriz
+*    MAT_CondRetFaltouMemoria
+*     MAT_CondRetOK
 *
 ***********************************************************************/
 
-   //ARV_tpCondRet ARV_IrPai( void ) ;
-
-
-/***********************************************************************
-*
-*  $FC Função: ARV Ir para nó à esquerda
-*
-*  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetMATRIZNaoExiste
-*     ARV_CondRetMATRIZVazia
-*     ARV_CondRetNaoPossuiFilho   - nó corrente não possui filho à esquerda
-*
-***********************************************************************/
-
-   //ARV_tpCondRet ARV_IrNoEsquerda( void ) ;
-
+   MAT_tpCondRet MAT_InsereNo(int x, int y, tpMatriz* matriz, char** conteudoLista);
 
 /***********************************************************************
 *
-*  $FC Função: ARV Ir para nó à direita
+*  $FC Função: MAT Ir Norte
 *
-*  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetMATRIZNaoExiste
-*     ARV_CondRetMATRIZVazia
-*     ARV_CondRetNaoPossuiFilho   - nó corrente não possui filho à direita
-*
-***********************************************************************/
-
-   //ARV_tpCondRet ARV_IrNoDireita( void ) ;
-
-
-/***********************************************************************
-*
-*  $FC Função: ARV Obter valor corrente
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Norte (x, y - 1) do nó corrente atual.
 *
 *  $EP Parâmetros
-*     $P ValorParm - é o parâmetro que receberá o valor contido no nó.
-*                    Este parâmetro é passado por referência.
+*    $P matriz - Ponteiro para a matriz a ser manipulada
 *
 *  $FV Valor retornado
-*     ARV_CondRetOK
-*     ARV_CondRetMATRIZNaoExiste
-*     ARV_CondRetMATRIZVazia
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
 *
 ***********************************************************************/
 
-   //ARV_tpCondRet ARV_ObterValorCorr( char * ValorParm ) ;
+   MAT_tpCondRet MAT_IrN ( tpMatriz * pMatriz );
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Sul
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Sul (x, y + 1) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+
+   MAT_tpCondRet MAT_IrS( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Leste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Leste (x + 1, y) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrE ( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Oeste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Oeste (x - 1, y) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrW ( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Noroeste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Noroeste (x - 1, y - 1) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrNW ( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Nordeste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Nordeste (x + 1, y - 1) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrNE ( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Sudeste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Sudeste (x + 1, y + 1) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrSE ( tpMatriz * pMatriz ) ;
+
+
+/***********************************************************************
+*
+*  $FC Função: MAT Ir Sudoeste
+*
+*  $ED Descrição da função
+*     Altera o nó corrente para o localizado ao Sudoeste (x - 1, y + 1) do nó corrente atual.
+*
+*  $EP Parâmetros
+*    $P matriz - Ponteiro para a matriz a ser manipulada
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*     MAT_CondRetNoEstaNaBorda
+*
+***********************************************************************/
+
+   MAT_tpCondRet MAT_IrSW ( tpMatriz * pMatriz ) ;
+
+/***********************************************************************
+*
+*  $FC Função: MAT Obter valor corrente
+*
+*  $ED Descrição da função
+*     Obtem o valor do nó corrente na matriz especificada
+*
+*  $EP Parâmetros
+*     $P matriz - Ponteiro para a matriz cujo valor corrente é requerido
+*    $P saida - Ponteiro para char que receberá o valor recuperado
+*
+*  $FV Valor retornado
+*     MAT_CondRetOK
+*     MAT_CondRetMatrizNaoExiste
+*     MAT_CondRetMatrizVazia
+*
+***********************************************************************/
+
+	MAT_tpCondRet MAT_ObterValorCorr(tpMatriz* matriz, char * saida );
 
 #undef MATRIZ_EXT
 
